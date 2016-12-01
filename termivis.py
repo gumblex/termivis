@@ -157,6 +157,7 @@ class Image2ANSI:
             newimg = newimg._makeself(im)
         padding = height % 2
         lastfg = lastbg = None
+        yield '\x1b[?25l\x1b[2J\x1b[1H'
         for y in range(0, height, 2):
             if padding and y == height-1:
                 yield '\x1b[49m'
@@ -173,6 +174,7 @@ class Image2ANSI:
                 yield '▀'
             yield '\n'
         yield '\x1b[0;39;49m'
+        yield '\x1b[?25h'
 
 def paint(filename, mode='24b', palette='tango', width=None, height=None):
     ia = Image2ANSI(mode, palette)
