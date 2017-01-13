@@ -177,7 +177,17 @@ class Image2ANSI:
         yield '\x1b[0;39;49m'
         yield '\x1b[?25h'
 
-def paint(filename, mode='24b', palette='tango', width=None, height=None):
+def paint(filename, mode='24b', palette=None, width=None, height=None):
+    if not palette:
+        term = os.environ.get('TERM', '')
+        if os.environ.get('VTE_VERSION') and term.endswith('-256color'):
+            palette = 'tango'
+        elif term == 'linux':
+            palette = 'linux'
+        elif term.startswith('rxvt'):
+            palette = 'rxvt'
+        else:
+            palette = 'xterm'
     ia = Image2ANSI(mode, palette)
     img = Image.open(filename)
     if width and not height:
