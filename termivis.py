@@ -159,6 +159,8 @@ class Image2ANSI:
         lastfg = lastbg = None
         yield '\x1b[?25l\x1b[2J\x1b[1H'
         for y in range(0, height, 2):
+            if y:
+                yield '\n'
             if padding and y == height-1:
                 yield '\x1b[49m'
             for x in range(width):
@@ -172,7 +174,6 @@ class Image2ANSI:
                         yield self.func_bg(bg)
                         lastbg = bg
                 yield '▀'
-            yield '\n'
         yield '\x1b[0;39;49m'
         yield '\x1b[?25h'
 
@@ -197,6 +198,10 @@ def paint(filename, mode='24b', palette='tango', width=None, height=None):
     for s in ia.convert(img, width, height):
         sys.stdout.write(s)
     sys.stdout.flush()
+    try:
+        input()
+    except (EOFError, KeyboardInterrupt) as ex:
+        pass
 
 if __name__ == '__main__':
     sys.exit(paint(*sys.argv[1:]))
